@@ -1,8 +1,13 @@
 import telebot
 from config import TOKEN
-from logic import gen_pass, command_list, flip
+from logic import gen_pass, command_list, flip, fox
+import os
+import random
+import requests
+
     
 bot = telebot.TeleBot(TOKEN)
+memes = os.listdir("./img")
     
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -70,7 +75,23 @@ def send_flip(message):
     elif coin == 3:
         bot.reply_to(message, "Выпало ребро")
         
-
+@bot.message_handler(commands=['meme'])
+def send_meme(message):
+    words = message.text.split()
+    if len(words) == 2:
+        num_mem = int(words[1])
+        if 0 < num_mem <= len(memes):
+            with open(f"./img/{memes[num_mem -1]}", "rb") as f:
+                bot.send_photo(message.chat.id, f)
+            return
+    with open(f"./img/{random.choice(memes)}", "rb") as f:
+        bot.send_photo(message.chat.id, f)
+        
+@bot.message_handler(commands=['fox'])
+def send_fox(message):
+    image_url = fox()
+    bot.send_photo(message.chat.id, image_url)
+    
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
     bot.reply_to(message, message.text)
