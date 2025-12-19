@@ -1,4 +1,6 @@
 import random
+import requests
+
 
 def gen_pass(pass_length):
     elements = "+-/*!&$#?=@<>123456789"
@@ -25,6 +27,8 @@ def command_list():
 
 /newnickname - Добавляет к вашему username символы ( /newnickname <число> )
 
+/flip - Подбрасывает монету
+
 Если вы ввели команду которой не существует то бот ответит вам тем же что вы написали ему
     """
     return commands
@@ -32,3 +36,9 @@ def command_list():
 def flip():
     coin = random.randint(1,3)
     return coin
+
+def fox():
+    url = "https://randomfox.ca/floof/"
+    res = requests.get(url)
+    data = res.json()
+    return data['image']
