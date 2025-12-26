@@ -1,6 +1,6 @@
 import telebot
 from config import TOKEN
-from logic import gen_pass, command_list, flip, fox
+from logic import *
 import os
 import random
 import requests
@@ -91,6 +91,33 @@ def send_meme(message):
 def send_fox(message):
     image_url = fox()
     bot.send_photo(message.chat.id, image_url)
+    
+@bot.message_handler(commands=['tip'])
+def send_tip(message):
+    tip = give_tip()
+    bot.reply_to(message, tip)
+    
+@bot.message_handler(commands=['sort'])
+def send_sort(message):
+    if len(message.text.split()) == 2:
+        key = message.text.split()[1].lower()
+        if key in sort_dictionary:
+            bot.reply_to(message, f"{sort_dictionary.get(key)} ({key})")
+        else:
+            bot.reply_to(message, f"Я не знаю делать с {key}")
+    else:
+        bot.reply_to(message, "Введите материал или вещь после команды")
+        
+@bot.message_handler(commands=['decay'])
+def send_decay(message):
+    if len(message.text.split()) == 2:
+        key = message.text.split()[1]
+        if key in decay_dictionary:
+            bot.reply_to(message, f"{decay_dictionary.get(key)} ({key})")
+        else:
+            bot.reply_to(message, f"Я не знаю сколько разлагается {key}")
+    else:
+        bot.reply_to(message, "Введите материал после команды")
     
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
